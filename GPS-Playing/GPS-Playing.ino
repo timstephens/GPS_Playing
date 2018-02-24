@@ -11,7 +11,7 @@
 #include <SoftwareSerial.h>
 
 
-SoftwareSerial debugSerial(10,11);
+SoftwareSerial debugSerial(8,9);
 
 
 String myPosition;
