@@ -35,8 +35,8 @@ void setup()
   radio.initialize(FREQUENCY, MYNODEID, NETWORKID);
   radio.setHighPower(); // Always use this for RFM69HCW
 
-  // Turn on encryption if desired:
-
+  String myString = "Node 2 radio ready";
+  radio.send(TONODEID, myString.c_str(), myString.length());
 }
 
 void loop()
