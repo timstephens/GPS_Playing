@@ -1,3 +1,6 @@
+// THIS END THE BASE STATION
+
+
 #include <RFM69.h>
 #include <SPI.h>
 
@@ -21,7 +24,7 @@ void setup()
 {
   // Open a serial port so we can send keystrokes to the module:
 
-  Serial.begin(57600);
+  Serial.begin(115200);
   Serial.print("Node ");
   Serial.print(MYNODEID, DEC);
   Serial.println(" ready");
@@ -48,21 +51,43 @@ void loop()
   {
     // Print out the information:
 
-    Serial.print("received from node ");
-    Serial.print(radio.SENDERID, DEC);
-    Serial.print(", message [");
-
+    //Serial.print("received from node ");
+    //Serial.print(radio.SENDERID, DEC);
+    Serial.print("gps ");
+    //    {"name": "cat", "lat": 51.42, "lon": -1.14}
     // The actual message is contained in the DATA array,
     // and is DATALEN bytes in size:
-
-    for (byte i = 0; i < radio.DATALEN; i++)
-      Serial.print((char)radio.DATA[i]);
-
+    //    Serial.print("map {\"name\":");
+    //    for (byte i = 34; i < radio.DATALEN && i < 40; i++) //The time is bytes 34-40ish in a $GPGLL string
+    //      Serial.print((char)radio.DATA[i]);
+    //  Serial.print(",\"lat\":");
+    //    for (byte i = 7; i < radio.DATALEN && i < 17; i++) //There are 10 sig figs on the lat and long, and lat starts at #7
+    //      Serial.print((char)radio.DATA[i]);
+    //    Serial.print(",\"lon\":-");  //Hacky, but we're "always" going to be WEST of Greenwich!!
+    //    for (byte i = 22; i < radio.DATALEN && i < 31; i++) //Also hacky: the first digit of the longitude is "always" going to be 0 since we're close to Greenwich. Drop it.
+    //      Serial.print((char)radio.DATA[i]);
+    //    Serial.println("}");
+    //    Serial.write(0);
     // RSSI is the "Receive Signal Strength Indicator",
     // smaller numbers mean higher power.
 
-    Serial.print("], RSSI ");
-    Serial.println(radio.RSSI);
+    for (byte i = 0; i < radio.DATALEN; i++) //The time is bytes 34-40ish in a $GPGLL string
+      Serial.print((char)radio.DATA[i]);
+    //      Serial.print(",RSSI:");
+    //      Serial.println(radio.RSSI);
+    Serial.println("");
+    Serial.write(0);
+    //      Serial.write(0);
+  }
+
+  // SENDING
+  if (Serial.available()) {
+    String serialIn;
+    serialIn = "";
+    while (Serial.available()) {
+      serialIn.concat(Serial.read());
+    }
+    radio.send(TONODEID, serialIn.c_str(), serialIn.length());
 
   }
 }
