@@ -33,6 +33,7 @@ String myPosition;
 
 
 void setup() {
+
   //Setup Serial ports
 
   Serial.begin(57600);
@@ -53,7 +54,6 @@ void setup() {
   String myString = "Node 1 ready";
   radio.send(TONODEID, myString.c_str(), myString.length());
   Serial.println("ready");
-
 }
 
 
@@ -83,11 +83,14 @@ void loop() {
   //RECEIVE FROM RADIO TO GPS (SEND TO SERIAL FOR DEBUG)
   if (radio.receiveDone()) // Got one!
   {
-  String receivedData;
-    for (byte i = 0; i < radio.DATALEN; i++){
-      //Serial.print((char)radio.DATA[i]);
-      receivedData.concat(String(radio.DATA[i]));
+    Serial.println("Raw: ");
+    String receivedData = String((char *)radio.DATA);
+    for (byte i = 0; i < radio.DATALEN; i++) {
+      Serial.print((char)radio.DATA[i]);
+      // receivedData.concat((radio.DATA[i]));
     }
+    Serial.println();
+    Serial.print("Parsed: ");
     Serial.print(receivedData);
     Serial.print(",RSSI:");
     Serial.println(radio.RSSI);

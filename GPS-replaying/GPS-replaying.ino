@@ -84,9 +84,7 @@ void loop()
   if (Serial.available()) {
     String serialIn;
     serialIn = "";
-    while (Serial.available()) {
-      serialIn.concat(Serial.read());
-    }
+    serialIn = Serial.readStringUntil(0xff);
     radio.send(TONODEID, serialIn.c_str(), serialIn.length());
 
   }
