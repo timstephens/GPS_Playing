@@ -1,8 +1,13 @@
-// THIS END THE BASE STATION
+// THIS END THE BASE STATION, connected to ESP8266
 
+/*
+  // On a Pro mini, also need to remember to set the clock speed or your timings and baud rates will be out by a factor of 2 (8 vs 16MHz)
+    Radio communicates over SPI (10 -SS ,11 -MISO ,12 -MOSI,13 - SCK)
+*/
 
 #include <RFM69.h>
 #include <SPI.h>
+
 
 // Addresses for this node. CHANGE THESE FOR EACH NODE!
 
@@ -35,8 +40,11 @@ void setup()
   radio.initialize(FREQUENCY, MYNODEID, NETWORKID);
   radio.setHighPower(); // Always use this for RFM69HCW
 
-  String myString = "Node 2 radio ready";
+  String myString = "Node 2 radio ready as String";
   radio.send(TONODEID, myString.c_str(), myString.length());
+  delay(100);
+  char charArray[22] = "Node 2 ready as array";
+  radio.send(TONODEID, charArray, 21);
 }
 
 void loop()
@@ -82,10 +90,19 @@ void loop()
 
   // SENDING
   if (Serial.available()) {
-    String serialIn;
-    serialIn = "";
-    serialIn = Serial.readStringUntil(0xff);
-    radio.send(TONODEID, serialIn.c_str(), serialIn.length());
+    //    char serialIn[32];
+    //    serialIn = "";
+    //    int serialInLength = Serial.readBytesUntil(0, serialIn, 32);  //if we readBytes, then we don't need to convert back inot a c_str() when the data is sent to the radio??
+    String serialIn = "";
+//        serialIn = Serial.readStringUntil(0);
+
+    while (Serial.available()) {
+      Serial.println(Serial.read(), DEC);
+    }
+
+    Serial.print(serialIn);
+    Serial.println();
+    radio.send(TONODEID, serialIn.c_str(), serialIn.length()); //, serialInLength);
 
   }
 }

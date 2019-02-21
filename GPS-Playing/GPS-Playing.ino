@@ -1,5 +1,5 @@
 /* Connect to GPS receiver and broadcast the position fix down the serial port.
-
+This is the transmitter end (connected to the GPS)
 
   // On a Pro mini, also need to remember to set the clock speed or your timings and baud rates will be out by a factor of 2 (8 vs 16MHz)
     Radio communicates over SPI (10 -SS ,11 -MISO ,12 -MOSI,13 - SCK)
@@ -26,7 +26,7 @@
 #define ENCRYPTKEY    "TOPSECRETPASSWRD" // Use the same 16-byte key on all nodes
 
 
-SoftwareSerial GPSSerial(8, 9);
+//SoftwareSerial GPSSerial(8, 9);
 RFM69 radio;
 
 String myPosition;
@@ -36,8 +36,8 @@ void setup() {
 
   //Setup Serial ports
 
-  Serial.begin(57600);
-  GPSSerial.begin(9600);
+  Serial.begin(115200);
+//  GPSSerial.begin(57600);
 
   //Setup radio (later)
   Serial.println("Setup");
@@ -64,21 +64,21 @@ void loop() {
 
   //ECHO FROM GPS TO RADIO
 
-  if (GPSSerial.available()) {
-    myPosition = GPSSerial.readStringUntil('\n');
-    Serial.write(myPosition.c_str(), myPosition.length());
-    Serial.println();
-
-    if (myPosition.startsWith("$GPGLL")) {
-      //truncate to 62bytes (max length of a datablock)
-      myPosition = myPosition.substring(0, 60);
-      //      Serial.write(myPosition.c_str(), myPosition.length());
-      //    Serial.println();
-      //send stuff via the radio link
-      radio.send(TONODEID, myPosition.c_str(), myPosition.length());
-
-    }
-  }
+//  if (GPSSerial.available()) {
+//    myPosition = GPSSerial.readStringUntil('\n');
+//    Serial.write(myPosition.c_str(), myPosition.length());
+//    Serial.println();
+//
+//    if (myPosition.startsWith("$GPGLL")) {
+//      //truncate to 62bytes (max length of a datablock)
+//      myPosition = myPosition.substring(0, 60);
+//      //      Serial.write(myPosition.c_str(), myPosition.length());
+//      //    Serial.println();
+//      //send stuff via the radio link
+//      radio.send(TONODEID, myPosition.c_str(), myPosition.length());
+//
+//    }
+//  }
 
   //RECEIVE FROM RADIO TO GPS (SEND TO SERIAL FOR DEBUG)
   if (radio.receiveDone()) // Got one!
